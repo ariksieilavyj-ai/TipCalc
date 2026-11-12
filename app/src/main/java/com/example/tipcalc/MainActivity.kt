@@ -73,25 +73,36 @@ fun onScreen() {
     var tips = tipsCount(sliderValue, sumOrder.toIntOrNull())
     var result by remember { mutableStateOf("") }
     var finish by remember { mutableStateOf("") }
-    result = "Скидка: " + sell.toString()
     Box(modifier = Modifier.
     fillMaxSize()
     ){
         Column(){
             TextField(value = sumOrder, modifier = Modifier.padding(5.dp),
-                onValueChange = {newSum: String -> sumOrder = newSum}, placeholder = {Text("Сумма заказа")})
+                onValueChange = {
+                    sumOrder = it
+                    finish = ""
+                    result = "Скидка: " + sell.toString()
+                }, placeholder = {Text("Сумма заказа")})
             if ((sumOrder.toIntOrNull()==null) && (sumOrder.isNullOrEmpty()==false)){
                 Text("Неподдерживаемый формат", modifier = Modifier.padding(5.dp), )
             }
             TextField(value = queOrder, modifier = Modifier.padding(5.dp),
-                onValueChange = {newQue: String -> queOrder = newQue}, placeholder = {Text("Кол-во блюд")})
+                onValueChange = {
+                    queOrder = it
+                    finish = ""
+                    result = "Скидка: " + sell.toString()
+                }, placeholder = {Text("Кол-во блюд")})
             if ((queOrder.toIntOrNull()==null) && (queOrder.isNullOrEmpty()==false)){
                 Text("Неподдерживаемый формат", modifier = Modifier.padding(5.dp), )
             }
             Text("Чаевые: " + tips.toString(), modifier = Modifier.padding(5.dp))
             Slider(
                 value = sliderValue,
-                onValueChange = {sliderValue = it},
+                onValueChange = {
+                    sliderValue = it
+                    finish = ""
+                    result = "Скидка: " + sell.toString()
+                },
                 valueRange = 0f..25f,
                 steps = 4,
                 modifier = Modifier.padding(5.dp),
@@ -131,8 +142,10 @@ fun onScreen() {
 
                 }
             }
-            Text(result, modifier = Modifier.padding(5.dp))
-            Text(finish, modifier = Modifier.padding(5.dp))
+            if (finish != ""){
+                Text(finish, modifier = Modifier.padding(5.dp))
+            }
+            else Text(result, modifier = Modifier.padding(5.dp))
             Button(
                 onClick = {
                     if (sumOrder.toIntOrNull() != null){
