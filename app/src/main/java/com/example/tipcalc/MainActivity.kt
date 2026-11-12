@@ -30,6 +30,10 @@ import androidx.compose.material3.Slider
 import androidx.compose.ui.composed
 import kotlin.math.round
 import kotlin.ranges.rangeTo
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.RadioButton
+import androidx.compose.ui.Alignment
+import kotlinx.coroutines.selects.select
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +54,7 @@ fun onScreen() {
     var sumOrder by remember { mutableStateOf("") }
     var queOrder by remember { mutableStateOf("") }
     var sliderValue by remember { mutableStateOf(0f) }
+    var radioValue = queOrder.toIntOrNull()
     Box(modifier = Modifier.
     fillMaxSize()
     ){
@@ -73,6 +78,36 @@ fun onScreen() {
                 modifier = Modifier.padding(10.dp),
             )
             Text(round(sliderValue).toInt().toString(), modifier = Modifier.padding(5.dp))
+            Row(modifier = Modifier.padding(5.dp)) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    RadioButton(
+                        selected = (radioValue in 1 .. 2),
+                        onClick = {},
+                    )
+                    Text("3%")
+                }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    RadioButton(
+                        selected = (radioValue in 3 .. 5),
+                        onClick = {},
+                    )
+                    Text("5%")
+                }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    RadioButton(
+                        selected = (radioValue in 6 .. 10),
+                        onClick = {},
+                    )
+                    Text("7%")
+                }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    RadioButton(
+                        selected = (radioValue in (11..100)),
+                        onClick = {},
+                    )
+                    Text("10%")
+                }
+            }
         }
     }
 }
