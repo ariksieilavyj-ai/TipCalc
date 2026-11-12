@@ -20,20 +20,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
-import android.service.autofill.Validators.or
-import androidx.annotation.Nullable
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.ui.layout.onVisibilityChangedNode
-import java.nio.file.WatchEvent
-import kotlin.reflect.typeOf
 import androidx.compose.material3.Slider
-import androidx.compose.ui.composed
 import kotlin.math.round
 import kotlin.ranges.rangeTo
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.RadioButton
 import androidx.compose.ui.Alignment
-import kotlinx.coroutines.selects.select
+import kotlin.ranges.contains
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,12 +42,27 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+fun sellCount(sum: Int?, quentity: Int?): Any {
+    if (sum!=null && quentity!=null){
+        return when (quentity) {
+            in 1 .. 2 -> round(sum * 0.03)
+            in 3 .. 5 -> round(sum * 0.05)
+            in 6 .. 10 -> round(sum * 0.07)
+            in 10 .. 100 -> round(sum * 0.1)
+            else -> 0
+        }
+    }
+    else return 0
+}
+
+
 @Composable
 fun onScreen() {
     var sumOrder by remember { mutableStateOf("") }
     var queOrder by remember { mutableStateOf("") }
     var sliderValue by remember { mutableStateOf(0f) }
     var radioValue = queOrder.toIntOrNull()
+    var resultMes = "Скидка " + sellCount(sumOrder.toIntOrNull(),queOrder.toIntOrNull()).toString()
     Box(modifier = Modifier.
     fillMaxSize()
     ){
@@ -69,7 +77,7 @@ fun onScreen() {
             if ((queOrder.toIntOrNull()==null) && (queOrder.isNullOrEmpty()==false)){
                 Text("Неподдерживаемый формат", modifier = Modifier.padding(5.dp), )
             }
-            Text("Чаевые:")
+            Text("Чаевые: ", modifier = Modifier.padding(5.dp))
             Slider(
                 value = sliderValue,
                 onValueChange = {sliderValue = it},
@@ -108,6 +116,7 @@ fun onScreen() {
                     Text("10%")
                 }
             }
+            Text(resultMes)
         }
     }
 }
