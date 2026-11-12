@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.RadioButton
 import androidx.compose.ui.Alignment
 import kotlin.ranges.contains
+import androidx.compose.material3.Button
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,19 +43,25 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun sellCount(sum: Int?, quentity: Int?): Any {
+fun sellCount(sum: Int?, quentity: Int?): Int {
     if (sum!=null && quentity!=null){
         return when (quentity) {
-            in 1 .. 2 -> round(sum * 0.03)
-            in 3 .. 5 -> round(sum * 0.05)
-            in 6 .. 10 -> round(sum * 0.07)
-            in 10 .. 100 -> round(sum * 0.1)
+            in 1 .. 2 -> round(sum * 0.03).toInt()
+            in 3 .. 5 -> round(sum * 0.05).toInt()
+            in 6 .. 10 -> round(sum * 0.07).toInt()
+            in 10 .. 100 -> round(sum * 0.1).toInt()
             else -> 0
         }
     }
     else return 0
 }
 
+fun tipsCount(percent: Float?, sum: Int?): Int {
+    if (percent != null && sum!= null) {
+        return (sum * (percent * 0.01)).toInt()
+    }
+    else return 0
+}
 
 @Composable
 fun onScreen() {
@@ -62,28 +69,30 @@ fun onScreen() {
     var queOrder by remember { mutableStateOf("") }
     var sliderValue by remember { mutableStateOf(0f) }
     var radioValue = queOrder.toIntOrNull()
-    var resultMes = "Скидка " + sellCount(sumOrder.toIntOrNull(),queOrder.toIntOrNull()).toString()
+    var sell = sellCount(sumOrder.toIntOrNull(),queOrder.toIntOrNull())
+    var tips = tipsCount(sliderValue, sumOrder.toIntOrNull())
+    var result = "Скидка: " + sell
     Box(modifier = Modifier.
     fillMaxSize()
     ){
         Column(){
-            TextField(value = sumOrder, modifier = Modifier.padding(10.dp),
+            TextField(value = sumOrder, modifier = Modifier.padding(5.dp),
                 onValueChange = {newSum: String -> sumOrder = newSum}, placeholder = {Text("Сумма заказа")})
             if ((sumOrder.toIntOrNull()==null) && (sumOrder.isNullOrEmpty()==false)){
                 Text("Неподдерживаемый формат", modifier = Modifier.padding(5.dp), )
             }
-            TextField(value = queOrder, modifier = Modifier.padding(10.dp),
+            TextField(value = queOrder, modifier = Modifier.padding(5.dp),
                 onValueChange = {newQue: String -> queOrder = newQue}, placeholder = {Text("Кол-во блюд")})
             if ((queOrder.toIntOrNull()==null) && (queOrder.isNullOrEmpty()==false)){
                 Text("Неподдерживаемый формат", modifier = Modifier.padding(5.dp), )
             }
-            Text("Чаевые: ", modifier = Modifier.padding(5.dp))
+            Text("Чаевые: " + tips.toString(), modifier = Modifier.padding(5.dp))
             Slider(
                 value = sliderValue,
                 onValueChange = {sliderValue = it},
                 valueRange = 0f..25f,
                 steps = 4,
-                modifier = Modifier.padding(10.dp),
+                modifier = Modifier.padding(5.dp),
             )
             Text(round(sliderValue).toInt().toString(), modifier = Modifier.padding(5.dp))
             Row(modifier = Modifier.padding(5.dp)) {
@@ -116,7 +125,13 @@ fun onScreen() {
                     Text("10%")
                 }
             }
-            Text(resultMes)
+            Text(result, modifier = Modifier.padding(5.dp))
+            Button(
+                onClick = {result = (sumOrder.toInt()-sell+tips).toString()},
+                modifier = Modifier.padding(5.dp)
+            ) {
+                Text("Нажми")
+            }
         }
     }
 }
