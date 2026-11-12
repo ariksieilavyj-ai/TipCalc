@@ -49,7 +49,7 @@ fun sellCount(sum: Int?, quentity: Int?): Int {
             in 1 .. 2 -> round(sum * 0.03).toInt()
             in 3 .. 5 -> round(sum * 0.05).toInt()
             in 6 .. 10 -> round(sum * 0.07).toInt()
-            in 10 .. 100 -> round(sum * 0.1).toInt()
+            in 11 .. 100 -> round(sum * 0.1).toInt()
             else -> 0
         }
     }
@@ -71,7 +71,9 @@ fun onScreen() {
     var radioValue = queOrder.toIntOrNull()
     var sell = sellCount(sumOrder.toIntOrNull(),queOrder.toIntOrNull())
     var tips = tipsCount(sliderValue, sumOrder.toIntOrNull())
-    var result = "Скидка: " + sell
+    var result by remember { mutableStateOf("") }
+    var finish by remember { mutableStateOf("") }
+    result = "Скидка: " + sell.toString()
     Box(modifier = Modifier.
     fillMaxSize()
     ){
@@ -102,6 +104,7 @@ fun onScreen() {
                         onClick = {},
                     )
                     Text("3%")
+
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     RadioButton(
@@ -109,6 +112,7 @@ fun onScreen() {
                         onClick = {},
                     )
                     Text("5%")
+
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     RadioButton(
@@ -116,6 +120,7 @@ fun onScreen() {
                         onClick = {},
                     )
                     Text("7%")
+
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     RadioButton(
@@ -123,11 +128,18 @@ fun onScreen() {
                         onClick = {},
                     )
                     Text("10%")
+
                 }
             }
             Text(result, modifier = Modifier.padding(5.dp))
+            Text(finish, modifier = Modifier.padding(5.dp))
             Button(
-                onClick = {result = (sumOrder.toInt()-sell+tips).toString()},
+                onClick = {
+                    if (sumOrder.toIntOrNull() != null){
+                        finish = (sumOrder.toInt() - sell + tips).toString()
+                    }
+                    else finish = "Скидка: " + sell.toString()
+                },
                 modifier = Modifier.padding(5.dp)
             ) {
                 Text("Нажми")
